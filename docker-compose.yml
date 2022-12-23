@@ -1,0 +1,56 @@
+---
+
+version: "3.9"
+services:
+  mariadb:
+    hostname: mariadb
+    image: "${MARIADB_IMAGE}"
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: true
+      MARIADB_USER: slurm
+      MARIADB_PASSWORD: slurm
+    volumes:
+      - "./mariadb.conf.d:/etc/mysql/conf.d:ro"
+      - "./mariadb.initdb.d:/docker-entrypoint-initdb.d:ro"
+  slurmdbd:
+    hostname: slurmdbd
+    depends_on:
+      - "mariadb"
+    image: slurm-dev
+    build:
+      context: "./context"
+      dockerfile: "Dockerfile"
+      args:
+        SLURM_IMAGE: "${SLURM_IMAGE}"
+        UID: "${UID}"
+        GID: "${GID}"
+    volumes:
+      - "./cluster:/cluster"
+  slurmctld:
+    hostname: slurmctld
+    depends_on:
+      - "mariadb"
+      - "slurmdbd"
+    image: slurm-dev
+    volumes:
+      - "./cluster:/cluster"
+  slurmd:
+    hostname: slurmd
+    depends_on:
+      - "mariadb"
+      - "slurmdbd"
+      - "slurmctld"
+    image: slurm-dev
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+      - "./cluster:/cluster"
+  submit:
+    hostname: submit
+    depends_on:
+      - "mariadb"
+      - "slurmdbd"
+      - "slurmctld"
+      - "slurmd"
+    image: slurm-dev
+    volumes:
+      - "./cluster:/cluster"

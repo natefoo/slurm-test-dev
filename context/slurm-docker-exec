@@ -1,0 +1,14 @@
+#!/bin/sh
+
+mkdir /run/munge
+chown munge:munge /run/munge
+su munge -s /bin/sh -c /usr/sbin/munged
+
+case $(hostname) in
+    submit)
+        sleep infinity
+        ;;
+    *)
+        exec /usr/sbin/$(hostname) -D
+        ;;
+esac
