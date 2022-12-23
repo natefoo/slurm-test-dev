@@ -1,14 +1,39 @@
 #!/bin/sh
 
+[ /slurm.conf.d/* != '/slurm.conf.d/*' ] && cp -p /slurm.conf.d/* /etc/slurm
+chown slurm:slurm /etc/slurm/*
+chmod 0600 /etc/slurm/slurmdbd.conf
+
 mkdir /run/munge
 chown munge:munge /run/munge
 su munge -s /bin/sh -c /usr/sbin/munged
 
-case $(hostname) in
+prog=$(hostname)
+
+case $prog in
     submit)
         sleep infinity
         ;;
+    slurmdbd)
+        host=mariadb
+        port=3306
+        ;;
+    slurmctld)
+        host=slurmdbd
+        port=6819
+        ;;
+    slurmd)
+        host=slurmctld
+        port=6817
+        ;;
     *)
-        exec /usr/sbin/$(hostname) -D
+        echo "ERROR: invalid hostname: $(prog)"
+        exit 1
         ;;
 esac
+
+while ! nc -z $host $port; do
+    sleep 0.2
+done
+
+exec /usr/sbin/$prog -D

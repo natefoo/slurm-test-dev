@@ -1,7 +1,7 @@
 ARG SLURM_IMAGE
 FROM $SLURM_IMAGE
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y slurmdbd slurmctld slurmd slurm-client
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y slurmdbd slurmctld slurmd slurm-client netcat
 
 COPY munge.key /etc/munge/munge.key
 RUN chown munge:munge /etc/munge/munge.key

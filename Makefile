@@ -2,11 +2,11 @@ UID	:= $(shell id -u)
 GID	:= $(shell id -g)
 
 
-up: .env context/munge.key cluster
+up: .env context/munge.key cluster slurm.conf.d
 	docker-compose build
 	docker-compose up
 
-up-d: .env context/munge.key cluster
+up-d: .env context/munge.key cluster slurm.conf.d
 	docker-compose build
 	docker-compose up -d
 
@@ -14,8 +14,7 @@ down:
 	docker-compose down
 
 restart:
-	docker-compose build
-	docker-compose restart
+	docker-compose restart slurmdbd slurmctld slurmd submit
 
 submit:
 	docker-compose exec submit su - user
@@ -28,6 +27,9 @@ context/munge.key:
 
 cluster:
 	mkdir cluster
+
+slurm.conf.d:
+	mkdir slurm.conf.d
 
 clean:
 	docker-compose rm -sf

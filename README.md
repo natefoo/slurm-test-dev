@@ -19,6 +19,7 @@ This does a bit of one-time preparation:
 - Creating the Docker Compose `.env` file
 - Creating a munge key at `context/munge.key`
 - Creating a pseudo-shared filesystem in the `cluster` subdirectory, mounted at `/cluster` in the containers.
+- Create the `slurm.conf.d` subdirectory for your modified configs.
 
 After which, it runs `docker-compose up`. As is normal with foreground Docker Compose sessions, hit `Ctrl-C` to
 terminate. To start daemonized, run:
@@ -44,7 +45,8 @@ $ make clean
 
 This removes `.env` and the munge key, but does not remove the `cluster` directory. It also removes the Docker containers and images.
 
-To change the Slurm configuration, modify `context/slurm.conf` and then run:
+To change the Slurm configuration, copy the relevant config (e.g. `slurm.conf` from `context/` to `slurm.conf.d`, make
+your changes, and then run:
 
 ```console
 $ make restart

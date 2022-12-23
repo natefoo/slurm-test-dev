@@ -26,6 +26,7 @@ services:
         GID: "${GID}"
     volumes:
       - "./cluster:/cluster"
+      - "./slurm.conf.d:/slurm.conf.d:ro"
   slurmctld:
     hostname: slurmctld
     depends_on:
@@ -34,6 +35,7 @@ services:
     image: slurm-dev
     volumes:
       - "./cluster:/cluster"
+      - "./slurm.conf.d:/slurm.conf.d:ro"
   slurmd:
     hostname: slurmd
     depends_on:
@@ -44,6 +46,7 @@ services:
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
       - "./cluster:/cluster"
+      - "./slurm.conf.d:/slurm.conf.d:ro"
   submit:
     hostname: submit
     depends_on:
@@ -54,3 +57,4 @@ services:
     image: slurm-dev
     volumes:
       - "./cluster:/cluster"
+      - "./slurm.conf.d:/slurm.conf.d:ro"
