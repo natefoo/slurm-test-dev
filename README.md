@@ -47,8 +47,7 @@ This removes `.env` and the munge key, but does not remove the `cluster` directo
 To change the Slurm configuration, modify `context/slurm.conf` and then run:
 
 ```console
-$ docker-compose build
-$ docker-compose restart
+$ make restart
 ```
 
 To submit jobs:

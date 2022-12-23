@@ -13,6 +13,10 @@ up-d: .env context/munge.key cluster
 down:
 	docker-compose down
 
+restart:
+	docker-compose build
+	docker-compose restart
+
 submit:
 	docker-compose exec submit su - user
 
